@@ -1,3 +1,3 @@
-module handler
+module chain
 
 go 1.17

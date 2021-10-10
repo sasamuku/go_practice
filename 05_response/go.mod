@@ -1,3 +1,3 @@
-module handler
+module response
 
 go 1.17
