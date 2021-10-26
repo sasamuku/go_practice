@@ -53,6 +53,7 @@ func (comment *Comment) Create() (err error) {
 		err = errors.New("Post not found")
 		return
 	}
+	// Scan()でクエリにより返ってきた値を変数にコピーする
 	err = Db.QueryRow("insert into comments (content, author, post_id) values ($1, $2, $3) returning id", comment.Content, comment.Author, comment.Post.Id).Scan(&comment.Id)
 	if err != nil {
 		fmt.Println("Error while creating comment:\n", err)
@@ -74,6 +75,8 @@ func GetPost(id int) (post Post, err error) {
 		fmt.Println("Error while getting comment:\n", err)
 		return
 	}
+	defer rows.Close()
+
 	for rows.Next() {
 		comment := Comment{Post: &post}
 		err = rows.Scan(&comment.Id, &comment.Content, &comment.Author)
@@ -83,7 +86,6 @@ func GetPost(id int) (post Post, err error) {
 		}
 		post.Comments = append(post.Comments, comment)
 	}
-	rows.Close()
 	return
 }
 
